@@ -1,0 +1,6 @@
+---
+
+- name: Remove stress-ng  package
+  ansible.builtin.package:
+    name: stress-ng
+    state: absent

@@ -1,0 +1,7 @@
+---
+# tasks file for stressng_deploy
+
+- name: Install the latest version of stress-ng  package
+  ansible.builtin.package:
+    name: stress-ng
+    state: latest

@@ -1,0 +1,17 @@
+---
+# tasks file for fio_deploy
+
+- name: Stop fio-server service 
+    ansible.builtin.systemd_service:
+      state: stopped
+      name: fio-server
+
+- name: Remove port 8765 from filewall allow list
+    shell: 'firewall-cmd --remove-port=8765/tcp'
+
+
+- name: Remove the fio package from target machines
+    ansible.builtin.package:
+      name: fio
+      state: absent
+

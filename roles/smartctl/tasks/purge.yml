@@ -1,0 +1,6 @@
+---
+
+- name: Remove the smartmontools package
+    ansible.builtin.package:
+      name: smartmontools
+      state: absent

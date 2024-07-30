@@ -1,0 +1,13 @@
+---
+# tasks file for smartctl_run
+
+- name: Change dir to log directory
+    ansible.builtin.command:
+      args:
+        chdir: {{ log_dir }}
+
+- name: Run smartctl long test
+  ansible.builtin.shell: "nohup /usr/sbin/smartctl -t long {{ item }} > {{ item | basename }}_smartctl.log &"
+  loop: "{{ hdd }}"
+
+

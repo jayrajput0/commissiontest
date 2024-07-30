@@ -1,0 +1,62 @@
+---
+
+- name: Execute the stress-ng CPU test on target machines
+  hosts: all
+  vars:
+    stress_ng_duration: 1m
+    stress_ng_cpu: 1
+    stress_ng_cpu_load: 70
+    stress_ng_cpu_log_file: cpu_stress.log
+    stress_ng_cpu_method: all    
+
+  tasks:
+    - name: create a local directory on control node to fetch logs from remote hosts
+      ansible.builtin.file:
+        path: "/var/tmp/stress-ng"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+
+    - name: Create a log directory on target machines
+      ansible.builtin.file:
+        path: "{{ inventory_hostname  }}"
+        state: directory
+        mode: '0755'
+      register: create_dir
+
+    - name: set the log directory path variable
+      ansible.builtin.set_fact: 
+        log_dir: "{{ inventory_hostname }}"
+      when: create_dir is succeeded
+
+    - name: Deploy stress-ng 
+      import_tasks: roles/stress-ng/tasks/deploy.yml
+
+    - name: Run stress-ng test
+      import_tasks: roles/stress-ng/tasks/run.yml
+ 
+    - name: Archive the captured logs
+      community.general.archive:
+        path: "{{ log_dir }}"
+        dest: "{{ log_dir }}.tgz"
+
+    - name: Fetch the log directory to control node
+      ansible.builtin.fetch:
+        src: "{{ log_dir }}.tgz"
+        dest: "/var/tmp/stress-ng/"
+        flat: no
+
+    - name: Remove the log directory from target machines
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ log_dir }}"
+        - "{{ log_dir }}.tgz"
+
+    - name: Remove the stress-ng package 
+      import_tasks: roles/stress-ng/tasks/purge.yml
+
+
+
+

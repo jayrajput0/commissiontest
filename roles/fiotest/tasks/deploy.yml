@@ -1,0 +1,18 @@
+---
+# tasks file for fio_deploy
+
+- name: Install the latest version of fio package on target machines
+    ansible.builtin.package:
+      name: fio
+      state: latest
+
+- name: Add port 8765 to filewall allow list
+    shell: 'firewall-cmd --add-port=8765/tcp'
+
+- name: Start fio server 
+    shell: 'systemd-run -u fio-server fio --server'
+
+- name: Ensure that fio-server service is running
+    ansible.builtin.systemd_service:
+      state: started
+      name: fio-server

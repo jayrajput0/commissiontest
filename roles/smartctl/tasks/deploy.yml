@@ -1,0 +1,7 @@
+---
+# tasks file for smartctl_deploy
+
+- name: Install the latest version of smartmontools package
+    ansible.builtin.package:
+      name: smartmontools
+      state: latest

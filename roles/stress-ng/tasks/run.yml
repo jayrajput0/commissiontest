@@ -1,0 +1,14 @@
+---
+# tasks file for stressng_run
+
+- name: Run stress-ng test on target machines
+  ansible.builtin.shell: > 
+      stress-ng
+      --cpu {{ stress_ng_cpu }}
+      --cpu-method {{ stress_ng_cpu_method }}
+      -t {{ stress_ng_duration }}
+      --cpu-load {{ stress_ng_cpu_load }}
+      --log-file {{ stress_ng_cpu_log_file }}
+      --metrics-brief
+  args:
+    chdir: "{{ log_dir }}" 

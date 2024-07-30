@@ -1,0 +1,8 @@
+---
+# defaults file for stressng_run
+
+stress_ng_duration: 1m
+stress_ng_cpu: 1
+stress_ng_cpu_load: 70
+stress_ng_cpu_log_file: cpu_stress.log
+stress_ng_cpu_method: all
